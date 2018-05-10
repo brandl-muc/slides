@@ -1,0 +1,63 @@
+\documentclass{beamer}
+ \setbeamercovered{transparent}
+ \usetheme{Madrid}
+ \usecolortheme{lily}
+\usepackage{listings}
+
+\title{An application for private inheritance?}
+\author{Matth\"aus Brandl}
+\institute{EOS GmbH}
+\date{2018-05-17}
+\subject{Computer Science}
+
+\definecolor{ForestGreen}{RGB}{60, 160, 49}
+\def\code#1{\texttt{#1}}
+\def\cite#1{\textit{\textcolor{blue}{#1}}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}[fragile]
+\frametitle{Wait, what?}
+\framesubtitle{What is private inheritance}
+
+\lstset{language=C++,
+                basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{ForestGreen}\ttfamily,
+                morecomment=[l][\color{gray}]{\#}
+}
+\begin{lstlisting}
+class Derived : private Base
+{};
+\end{lstlisting}
+
+\begin{itemize}
+\item all public and protected members of \code{Base} are accessible as private members of the derived class
+\item private members of the base are never accessible unless friended
+\item instances of \code{Derived} cannot be cast to \code{Base} as this relationship is inaccessible outside of \code{Derived}
+\end{itemize}
+
+Consequently this models HAS-A instead of IS-A.\\
+But \cite{favor composition over inheritance} is also valid here, so HAS-A is better modelled by using a member variable because this causes less coupling. Also one is less likely to violate the Liskov Substitution Principle.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exceptions to the rule}
+%\framesubtitle{To every rule there is an exception}
+Private inheritance should be used if one does not want to model IS-A but
+\begin{itemize}
+\item needs to override a \code{virtual} function
+\item needs access to a protected member
+\item needs to create an object before / destroy it after another base
+\item needs to share a virtual base or needs to control the construction of a virtual base
+\item wants to make use of the Empty Base Optimization, e.g. with policy-based design
+\end{itemize}
+
+Also see the \href{https://isocpp.org/wiki/faq/private-inheritance}{\beamergotobutton{C++ FAQ}} or \href{https://en.cppreference.com/w/cpp/language/derived_class%23Private_inheritance}{\beamergotobutton{cppreference.com}}.
+\end{frame}
+
+\end{document}
