@@ -67,4 +67,35 @@ Also see the \href{https://isocpp.org/wiki/faq/private-inheritance}{\beamergotob
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]
+\frametitle{The problem}
+%\framesubtitle{Subtitle}
+Suppose the following C API:
+
+\lstset{language=C++,
+                basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{ForestGreen}\ttfamily,
+                morecomment=[l][\color{gray}]{\#}
+}
+\begin{lstlisting}
+typedef struct
+{
+    /* raw owning pointer, it's C after all */
+    char const * name;
+
+    /* more variables that need resources ... */
+} Widget;
+
+int createWidget(Widget const ** widget);
+
+void freeWidget(Widget const * widget);
+\end{lstlisting}
+
+Your job now is to implement this API using C++.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \end{document}
