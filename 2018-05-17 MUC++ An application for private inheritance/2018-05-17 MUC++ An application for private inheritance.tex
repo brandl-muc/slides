@@ -3,14 +3,62 @@
  \usetheme{Madrid}
  \usecolortheme{lily}
 \usepackage{listings}
+\usepackage{accsupp}
+\newcommand*{\noaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\definecolor{ForestGreen}{RGB}{60, 160, 49}
+
+\lstdefinestyle{Common}
+{
+    numbers=left,
+    numbersep=1em,
+    numberstyle=\tiny\color{red}\noaccsupp,
+    frame=single,
+    framesep=\fboxsep,
+    framerule=\fboxrule,
+    rulecolor=\color{red},
+    xleftmargin=\dimexpr\fboxsep+\fboxrule\relax,
+    xrightmargin=\dimexpr\fboxsep+\fboxrule\relax,
+    breaklines=true,
+    tabsize=2,
+    columns=flexible,
+}
+
+\lstdefinestyle{C++}
+{
+	style=Common,
+    language={C++},
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{ForestGreen}\ttfamily,
+    morecomment=[l][\color{gray}]{\#},
+    backgroundcolor=\color{orange!10},
+}
+
+\lstdefinestyle{TinyC++}
+{
+	style=Common,
+    language={C++},
+    basicstyle=\ttfamily\tiny,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{ForestGreen}\ttfamily,
+    morecomment=[l][\color{gray}]{\#},
+    backgroundcolor=\color{orange!10},
+}
+
+
+\lstnewenvironment{C++}{\lstset{style=C++}}{}
+\lstnewenvironment{TinyC++}{\lstset{style=TinyC++}}{}
 
 \title{An application for private inheritance?}
+\subtitle{Lightning Talk for MUC++}	
 \author{Matth\"aus Brandl}
 \institute{EOS GmbH}
 \date{2018-05-17}
 \subject{Computer Science}
 
-\definecolor{ForestGreen}{RGB}{60, 160, 49}
 \def\code#1{\texttt{#1}}
 \def\cite#1{\textit{\textcolor{blue}{#1}}}
 
@@ -26,17 +74,10 @@
 \frametitle{Wait, what?}
 \framesubtitle{What is private inheritance}
 
-\lstset{language=C++,
-                basicstyle=\ttfamily,
-                keywordstyle=\color{blue}\ttfamily,
-                stringstyle=\color{red}\ttfamily,
-                commentstyle=\color{ForestGreen}\ttfamily,
-                morecomment=[l][\color{gray}]{\#}
-}
-\begin{lstlisting}
+\begin{C++}
 class Derived : private Base
 {};
-\end{lstlisting}
+\end{C++}
 
 \begin{itemize}
 \item all public and protected members of \code{Base} are accessible as private members of the derived class
@@ -72,14 +113,7 @@ Also see the \href{https://isocpp.org/wiki/faq/private-inheritance}{\beamergotob
 %\framesubtitle{Subtitle}
 Suppose the following C API:
 
-\lstset{language=C++,
-                basicstyle=\ttfamily,
-                keywordstyle=\color{blue}\ttfamily,
-                stringstyle=\color{red}\ttfamily,
-                commentstyle=\color{ForestGreen}\ttfamily,
-                morecomment=[l][\color{gray}]{\#}
-}
-\begin{lstlisting}
+\begin{C++}
 typedef struct
 {
     /* raw owning pointer, it's C after all */
@@ -91,7 +125,7 @@ typedef struct
 int createWidget(Widget const ** widget);
 
 void freeWidget(Widget const * widget);
-\end{lstlisting}
+\end{C++}
 
 Your job now is to implement this API using C++.
 \end{frame}
