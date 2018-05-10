@@ -133,4 +133,80 @@ Your job now is to implement this API using C++.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]
+\frametitle{The C-ish approach}
+\framesubtitle{Tedious but effective}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+int createWidget(Widget const ** const widget)
+{
+	auto const newWidget = (Widget *) malloc(sizeof(Widget));
+	if (!newWidget)
+	{
+		return 0;
+	}
+    
+	auto const name = std::string(/* ... */);
+	if (name.emtpty())
+	{
+		free(newWidget);
+		return 0;
+	}
+	newWidget->name = strdup(name.c_str());
+    
+	/* ... */
+    
+	*widget = newWidget;
+	return 1;
+}
+\end{TinyC++}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+void freeWidget(Widget const * const widget)
+{
+	if (widget->name)
+	{
+		free(widget->name);
+	}
+    
+	/* ... */
+    
+	free(widget);
+}
+\end{TinyC++}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{The C-ish approach}
+\framesubtitle{Tedious but effective}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+	Advantages:
+	\begin{itemize}
+	\item straightforward to implement
+	\item easy to understand
+	\item low complexity
+	\end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+	Disadvantages:
+	\begin{itemize}
+	\item manual ressource management
+	\item error prone
+	\item hard to get right
+	\item \code{Widget} members are not zero initialized
+	\item manual ressource management!
+	\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \end{document}
