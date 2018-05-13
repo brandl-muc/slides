@@ -256,6 +256,8 @@ catch (std::bad_alloc const &)
 	return 0;
 }
 
+\end{TinyC++}
+\begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
 	delete static_cast<WidgetWrapper const *>(widget);
@@ -333,11 +335,10 @@ try
 	newWidget.release();
 	return 1;
 }
-catch (std::bad_alloc const &)
-{
-	return 0;
-}
+catch /* as before */
+\end{TinyC++}
 
+\begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
 	WidgetWrapper::deleteWidget(widget);
