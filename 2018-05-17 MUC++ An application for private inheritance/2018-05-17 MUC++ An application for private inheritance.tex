@@ -380,4 +380,18 @@ void freeWidget(Widget const * const widget)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]
+\frametitle{Alternatives?}
+	\begin{itemize}
+	\item Do not introduce private inheritance and trust in that no one will use the \code{Widget} wrongly
+	\item Use aggregation and pass the pointer to the member to the client\\
+	But now shared state between \code{createWidget()} and \code{freeWidget()} is necessary to find the correct \code{WidgetWrapper} instance for the given \code{Widget} pointer
+	\end{itemize}
+	
+	\bigskip
+	Please share your opinion and ideas
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \end{document}
