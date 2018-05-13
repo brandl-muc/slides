@@ -62,6 +62,7 @@
 \def\code#1{\texttt{#1}}
 \def\cite#1{\textit{\textcolor{blue}{#1}}}
 \def\titleinframe#1{{\usebeamercolor[fg]{structure} #1}}
+\def\link#1#2{\href{#1}{\usebeamercolor[fg]{structure} \underline{#2}}}
 
 \begin{document}
 
@@ -390,6 +391,9 @@ void freeWidget(Widget const * const widget)
 	
 	\bigskip
 	Please share your opinion and ideas
+	
+	\bigskip
+	There is a \link{http://coliru.stacked-crooked.com/a/e68e29b6461b083e}{working example on Coliru}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
