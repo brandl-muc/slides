@@ -62,6 +62,7 @@
 
 \def\code#1{\texttt{#1}}
 \def\cite#1{\textit{\textcolor{blue}{#1}}}
+\def\titleinframe#1{{\usebeamercolor[fg]{structure} #1}}
 
 \begin{document}
 
@@ -187,7 +188,7 @@ void freeWidget(Widget const * const widget)
 \framesubtitle{Tedious but effective}
 \begin{columns}
 \begin{column}{0.45\textwidth}
-	Advantages:
+	\titleinframe{Advantages:}
 	\begin{itemize}
 	\item straightforward to implement
 	\item easy to understand
@@ -195,7 +196,7 @@ void freeWidget(Widget const * const widget)
 	\end{itemize}
 \end{column}
 \begin{column}{0.45\textwidth}
-	Disadvantages:
+	\titleinframe{Disadvantages:}
 	\begin{itemize}
 	\item manual ressource management
 	\item error prone
