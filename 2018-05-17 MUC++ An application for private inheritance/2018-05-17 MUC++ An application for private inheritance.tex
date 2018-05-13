@@ -83,7 +83,7 @@ class Derived : private Base
 \begin{itemize}
 \item all public and protected members of \code{Base} are accessible as private members of the derived class
 \item private members of the base are never accessible unless friended
-\item instances of \code{Derived} cannot be cast to \code{Base} as this relationship is inaccessible outside of \code{Derived}
+\item instances of \code{Derived} cannot be cast to \code{Base} outside of \code{Derived} as this relationship is inaccessible
 \end{itemize}
 
 Consequently this models HAS-A instead of IS-A.\\
