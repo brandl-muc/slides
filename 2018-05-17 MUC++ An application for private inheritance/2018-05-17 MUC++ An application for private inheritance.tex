@@ -141,7 +141,7 @@ Your job now is to implement this API using C++.
 \begin{TinyC++}
 int createWidget(Widget const ** const widget)
 {
-	auto const newWidget = (Widget *) malloc(sizeof(Widget));
+	auto const newWidget = (Widget *) std::malloc(sizeof(Widget));
 	if (!newWidget)
 	{
 		return 0;
@@ -150,7 +150,7 @@ int createWidget(Widget const ** const widget)
 	auto const name = std::string(/* ... */);
 	if (name.emtpty())
 	{
-		free(newWidget);
+		freeWidget(newWidget);
 		return 0;
 	}
 	newWidget->name = strdup(name.c_str());
@@ -166,14 +166,11 @@ int createWidget(Widget const ** const widget)
 \begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
-	if (widget->name)
-	{
-		free(widget->name);
-	}
+	std::free(widget->name);
     
 	/* ... */
     
-	free(widget);
+	std::free(widget);
 }
 \end{TinyC++}
 \end{column}
