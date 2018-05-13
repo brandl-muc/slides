@@ -97,6 +97,7 @@ But HAS-A is better modelled by using a member variable because this causes less
 %\framesubtitle{To every rule there is an exception}
 Private inheritance should be used if one does not want to model IS-A but
 \begin{itemize}
+\pause
 \item needs to override a virtual function
 \pause
 \item needs access to a protected member
@@ -214,7 +215,7 @@ void freeWidget(Widget const * const widget)
 
 \begin{frame}[fragile]
 \frametitle{Automating ressource management}
-%\framesubtitle{That's why we like C++}
+\framesubtitle{Using the power of C++}
 \begin{columns}
 \begin{column}{0.45\textwidth}
 \pause
@@ -302,7 +303,8 @@ void freeWidget(Widget const * const widget)
 	Potential for resource leaks:
 	\begin{itemize}
 	\item \code{static\_cast} can be forgotten during deletion
-	\item implementer can still access \code{Widget} members and , e.g., assign raw owning pointers
+	\item implementers can still access \code{Widget} members and use them wrongly \\
+	(e.g. assign raw owning pointers)
 	\end{itemize}
 
 \end{column}
@@ -314,6 +316,7 @@ void freeWidget(Widget const * const widget)
 \begin{frame}[fragile]
 \frametitle{Enter private inheritance}
 \framesubtitle{Making \code{Wrapper} members inaccessible}
+\pause
 \begin{columns}
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
@@ -370,8 +373,8 @@ void freeWidget(Widget const * const widget)
 	
 	\medskip
 	\begin{itemize}
-	\item Easy to use right, hard to use wrong
 	\item \code{Widget} members not public anymore in \code{WidgetWrapper} context
+	\item Easy to use right, hard to use wrong
 	\end{itemize}
 \end{column}
 \pause
