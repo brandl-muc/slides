@@ -152,8 +152,8 @@ int createWidget(Widget const ** const widget)
 	}
 	*widget = Widget{}; // zero initialize
     
-	auto const name = std::string(/* ... */);
-	if (name.emtpty())
+	std::string	const name = getNameFromSomewhere(/* ... */);
+	if (name.empty())
 	{
 		freeWidget(newWidget);
 		return 0;
@@ -247,7 +247,7 @@ try
 {
 	auto newWidget = std::make_unique<WidgetWrapper>();
     
-	auto name = std::string(/* ... */);
+	std::string	name = getNameFromSomewhere(/* ... */);
 	if (name.empty())
 	{
 		return 0;
