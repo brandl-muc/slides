@@ -303,4 +303,81 @@ void freeWidget(Widget const * const widget)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{frame}[fragile]
+\frametitle{Enter private inheritance}
+\framesubtitle{Making \code{Wrapper} members inaccessible}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+class WidgetWrapper : private Widget // private!
+{
+	// As before
+	
+	Widget const * toWidget() const
+	{
+		return static_cast<Widget const *>(this);
+	}
+	
+	static void deleteWidget(Widget const * const widget)
+	{
+		delete static_cast<WidgetWrapper const *>(widget);
+	}
+};
+\end{TinyC++}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+int createWidget(Widget const ** const widget)
+try
+{
+	// As before
+    
+	*widget = newWidget->toWidget();
+	newWidget.release();
+	return 1;
+}
+catch (std::bad_alloc const &)
+{
+	return 0;
+}
+
+void freeWidget(Widget const * const widget)
+{
+	WidgetWrapper::deleteWidget(widget);
+}
+\end{TinyC++}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Enter private inheritance}
+%\framesubtitle{That's why we like C++}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+	\titleinframe{Advantages:}
+	
+	\medskip
+	\begin{itemize}
+	\item Easy to use right, hard to use wrong
+	\item \code{Widget} members not public anymore in \code{WidgetWrapper} context
+	\end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+	\titleinframe{Disadvantages:}
+	
+	\medskip
+	\begin{itemize}
+	\item deleting a \code{Widget} directly still possible
+	\item increases complexity, two additional functions necessary
+	\item uses private inheritance for a IS-A relationship
+	\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \end{document}
