@@ -368,7 +368,7 @@ void freeWidget(Widget const * const widget)
 	
 	\medskip
 	\begin{itemize}
-	\item deleting a \code{Widget} directly still possible
+	\item still possible to delete a \code{WidgetWrapper} via a pointer to \code{Widget} \\ (but easier to remember the function than the \code{static\_cast})
 	\item increased complexity, two additional functions necessary
 	\item uses private inheritance for an IS-A relationship
 	\end{itemize}
