@@ -312,7 +312,7 @@ void freeWidget(Widget const * const widget)
 class WidgetWrapper : private Widget // private!
 {
 	// As before
-	
+public:	
 	Widget const * toWidget() const
 	{
 		return static_cast<Widget const *>(this);
@@ -354,7 +354,7 @@ void freeWidget(Widget const * const widget)
 
 \begin{frame}[fragile]
 \frametitle{Enter private inheritance}
-%\framesubtitle{That's why we like C++}
+%\framesubtitle{Making \code{Wrapper} members inaccessible}
 \begin{columns}[T]
 \begin{column}{0.45\textwidth}
 	\titleinframe{Advantages:}
@@ -371,8 +371,8 @@ void freeWidget(Widget const * const widget)
 	\medskip
 	\begin{itemize}
 	\item deleting a \code{Widget} directly still possible
-	\item increases complexity, two additional functions necessary
-	\item uses private inheritance for a IS-A relationship
+	\item increased complexity, two additional functions necessary
+	\item uses private inheritance for an IS-A relationship
 	\end{itemize}
 \end{column}
 \end{columns}
