@@ -60,7 +60,6 @@
 \subject{Computer Science}
 
 \def\code#1{\texttt{#1}}
-\def\cite#1{\textit{\textcolor{blue}{#1}}}
 \def\titleinframe#1{{\usebeamercolor[fg]{structure} #1}}
 \def\link#1#2{\href{#1}{\usebeamercolor[fg]{structure} \underline{#2}}}
 
@@ -88,7 +87,7 @@ class Derived : private Base
 \end{itemize}
 
 Consequently this models HAS-A instead of IS-A.\\
-But \cite{favor composition over inheritance} is also valid here, so HAS-A is better modelled by using a member variable because this causes less coupling. Also one is less likely to violate the Liskov Substitution Principle.
+But HAS-A is better modelled by using a member variable because this causes less coupling (\textit{favor composition over inheritance}).
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
