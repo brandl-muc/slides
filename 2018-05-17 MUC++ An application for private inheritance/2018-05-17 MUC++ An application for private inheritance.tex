@@ -86,6 +86,7 @@ class Derived : private Base
 \item instances of \code{Derived} cannot be cast to \code{Base} outside of \code{Derived} as this relationship is inaccessible
 \end{itemize}
 
+\pause
 Consequently this models HAS-A instead of IS-A.\\
 But HAS-A is better modelled by using a member variable because this causes less coupling (\textit{favor composition over inheritance}).
 \end{frame}
@@ -98,12 +99,16 @@ But HAS-A is better modelled by using a member variable because this causes less
 Private inheritance should be used if one does not want to model IS-A but
 \begin{itemize}
 \item needs to override a virtual function
+\pause
 \item needs access to a protected member
+\pause
 \item needs to create an object before another base or destroy it after another base
+\pause
 \item needs to share a virtual base or needs to control the construction of a virtual base
+\pause
 \item wants to make use of the Empty Base Optimization, e.g. with policy-based design
 \end{itemize}
-
+\pause
 Also see the \link{https://isocpp.org/wiki/faq/private-inheritance}{C++ FAQ} or \link{https://en.cppreference.com/w/cpp/language/derived_class\#Private_inheritance}{cppreference.com}.
 \end{frame}
 
@@ -163,6 +168,7 @@ int createWidget(Widget const ** const widget)
 }
 \end{TinyC++}
 \end{column}
+\pause
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
 void freeWidget(Widget const * const widget)
@@ -192,6 +198,7 @@ void freeWidget(Widget const * const widget)
 	\item low complexity
 	\end{itemize}
 \end{column}
+\pause
 \begin{column}{0.45\textwidth}
 	\titleinframe{Disadvantages:}
 	\begin{itemize}
@@ -211,6 +218,7 @@ void freeWidget(Widget const * const widget)
 %\framesubtitle{That's why we like C++}
 \begin{columns}
 \begin{column}{0.45\textwidth}
+\pause
 \begin{TinyC++}
 class WidgetWrapper : public Widget
 {
@@ -232,6 +240,7 @@ private:
 };
 \end{TinyC++}
 \end{column}
+\pause
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
 int createWidget(Widget const ** const widget)
@@ -255,8 +264,8 @@ catch (std::bad_alloc const &)
 {
 	return 0;
 }
-
 \end{TinyC++}
+\pause
 \begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
@@ -286,6 +295,7 @@ void freeWidget(Widget const * const widget)
 	\item encapsulated "conversion" to C types
 	\end{itemize}
 \end{column}
+\pause
 \begin{column}{0.45\textwidth}
 	\titleinframe{Disadvantages:}
 	
@@ -311,6 +321,7 @@ void freeWidget(Widget const * const widget)
 class WidgetWrapper : private Widget // private!
 {
 	// As before
+
 public:	
 	Widget const * toWidget() const
 	{
@@ -324,6 +335,7 @@ public:
 };
 \end{TinyC++}
 \end{column}
+\pause
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
 int createWidget(Widget const ** const widget)
@@ -363,6 +375,7 @@ void freeWidget(Widget const * const widget)
 	\item \code{Widget} members not public anymore in \code{WidgetWrapper} context
 	\end{itemize}
 \end{column}
+\pause
 \begin{column}{0.45\textwidth}
 	\titleinframe{Disadvantages:}
 	
@@ -382,10 +395,12 @@ void freeWidget(Widget const * const widget)
 \frametitle{Alternatives?}
 	\begin{itemize}
 	\item Do not introduce private inheritance and trust in that no one will use the \code{Widget} wrongly
+	\pause
 	\item Use aggregation and pass the pointer to the member to the client\\
 	But now shared state between \code{createWidget()} and \code{freeWidget()} is necessary to find the correct \code{WidgetWrapper} instance for the given \code{Widget} pointer
 	\end{itemize}
 	
+	\pause
 	\bigskip
 	Please share your opinion and ideas
 	
