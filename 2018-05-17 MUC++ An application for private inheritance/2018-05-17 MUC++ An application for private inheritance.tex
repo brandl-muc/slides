@@ -146,6 +146,7 @@ int createWidget(Widget const ** const widget)
 	{
 		return 0;
 	}
+	*widget = Widget{}; // zero initialize
     
 	auto const name = std::string(/* ... */);
 	if (name.emtpty())
