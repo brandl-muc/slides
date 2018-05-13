@@ -218,13 +218,13 @@ void freeWidget(Widget const * const widget)
 class WidgetWrapper : public Widget
 {
 public:
-	WidgetWrapper()
+	explicit WidgetWrapper()
         : Widget()	// Default initialization!
 	{}
 
-	void setName(std::string name)
+	void setName(std::string value)
 	{
-		m_name = std::move(name);
+		m_name = std::move(value);
 		name = m_name.c_str();
 	}
 
@@ -232,7 +232,7 @@ public:
 	
 private:
 	std::string m_name;
-}
+};
 \end{TinyC++}
 \end{column}
 \begin{column}{0.45\textwidth}
@@ -243,11 +243,11 @@ try
 	auto newWidget = std::make_unique<WidgetWrapper>();
     
 	auto name = std::string(/* ... */);
-	if (name.emtpty())
+	if (name.empty())
 	{
 		return 0;
 	}
-	newWidget.setName(std::move(name));
+	newWidget->setName(std::move(name));
 
 	/* ... */
     
