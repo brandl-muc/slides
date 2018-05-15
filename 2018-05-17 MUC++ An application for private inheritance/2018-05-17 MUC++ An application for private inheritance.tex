@@ -99,12 +99,11 @@ However HAS-A is usually better modelled by using a member variable because this
 %\framesubtitle{To every rule there is an exception}
 Private inheritance should be used if one does not want to model IS-A but
 \begin{itemize}
-\pause
 \item needs to override a virtual function
 \pause
 \item needs access to a protected member
 \pause
-\item wants to make use of the Empty Base Optimization, e.g. with policy-based design
+\item wants to make use of the Empty Base Optimization (e.g. with policy-based design)
 \end{itemize}
 \pause
 There are also other use cases, see the \link{https://isocpp.org/wiki/faq/private-inheritance}{C++ FAQ} or \link{https://en.cppreference.com/w/cpp/language/derived_class\#Private_inheritance}{cppreference.com}.
