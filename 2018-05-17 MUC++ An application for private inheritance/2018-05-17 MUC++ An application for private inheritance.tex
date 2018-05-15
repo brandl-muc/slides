@@ -80,13 +80,15 @@ class Derived : private Base
 \end{C++}
 
 \begin{itemize}
-\item all public and protected members of \code{Base} are accessible as private members of the derived class
-\item private members of the base are never accessible unless friended
-\item instances of \code{Derived} cannot be cast to \code{Base} outside of \code{Derived} as this relationship is also private and hence inaccessible
-\end{itemize}
-
+\item all public and protected members of \code{Base} accessible as private members of \code{Derived}
+\item private members of \code{Base} never accessible (unless friended)
+\pause 
+\item inheritance relationship not accessible outside of \code{Derived}, not \code{static\_cast}-able
 \pause
-Consequently this models HAS-A instead of IS-A.\\
+\item models HAS-A instead of IS-A
+\end{itemize}
+\pause
+
 However HAS-A is usually better modelled by using a member variable because this causes less coupling (\textit{favor composition over inheritance}).
 \end{frame}
 
