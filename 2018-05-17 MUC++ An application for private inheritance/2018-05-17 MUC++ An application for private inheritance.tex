@@ -146,7 +146,7 @@ int createWidget(Widget const ** widget)
 	Widget * newWidget = (Widget *) std::malloc(sizeof(Widget));
 	if (!newWidget)
 	{
-		return 0;
+		return OUT_OF_MEMORY;
 	}
 	*widget = {}; // zero initialize
     
@@ -154,14 +154,14 @@ int createWidget(Widget const ** widget)
 	if (foo.empty())
 	{
 		freeWidget(newWidget);
-		return 0;
+		return FROBNICATE_FAILED;
 	}
 	newWidget->foo = strdup(foo.c_str());
     
 	/* ... */
     
 	*widget = newWidget;
-	return 1;
+	return SUCCESS;
 }
 \end{TinyC++}
 \end{column}
@@ -248,17 +248,17 @@ int createWidget(Widget const ** widget)
 		std::string	foo = frobnicate(/* ... */);
 		if (foo.empty())
 		{
-			return 0;
+			return FROBNICATE_FAILED;
 		}
 		newWidget->setFoo(foo);
 
 		// More setters
     
 		*widget = newWidget.release();
-		return 1;
+		return SUCCESS;
 	}
 	catch (std::bad_alloc const &)	{
-		return 0;
+		return OUT_OF_MEMORY;
 	}
 }
 \end{TinyC++}
@@ -344,7 +344,7 @@ try
     
 	*widget = newWidget->toWidget();
 	newWidget.release();
-	return 1;
+	return SUCCESS;
 }
 catch /* as before */
 \end{TinyC++}
