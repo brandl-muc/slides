@@ -120,13 +120,13 @@ Suppose the following C API:
 typedef struct
 {
     /* raw owning pointer, it's C after all */
-    char const * name;
+    char const * foo;
 
     /* more variables that need resources ... */
+    
 } Widget;
 
 int createWidget(Widget const ** widget);
-
 void freeWidget(Widget const * widget);
 \end{C++}
 
@@ -150,13 +150,13 @@ int createWidget(Widget const ** const widget)
 	}
 	*widget = Widget{}; // zero initialize
     
-	std::string	const name = getNameFromSomewhere(/* ... */);
-	if (name.empty())
+	std::string	const foo = frobnicate(/* ... */);
+	if (foo.empty())
 	{
 		freeWidget(newWidget);
 		return 0;
 	}
-	newWidget->name = strdup(name.c_str());
+	newWidget->foo = strdup(foo.c_str());
     
 	/* ... */
     
@@ -170,7 +170,7 @@ int createWidget(Widget const ** const widget)
 \begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
-	std::free(widget->name);
+	std::free(widget->foo);
     
 	/* ... */
     
@@ -217,23 +217,23 @@ void freeWidget(Widget const * const widget)
 \begin{column}{0.45\textwidth}
 \pause
 \begin{TinyC++}
-class WidgetWrapper : public Widget
+class ResourcedWidget : public Widget
 {
 public:
-	explicit WidgetWrapper()
+	explicit ResourcedWidget()
         : Widget()	// Default initialization!
 	{}
 
-	void setName(std::string value)
+	void setFoo(std::string value)
 	{
-		m_name = std::move(value);
-		name = m_name.c_str();
+		m_foo = std::move(value);
+		foo = m_foo.c_str();
 	}
 
 	// More setters...
 	
 private:
-	std::string m_name;
+	std::string m_foo;
 };
 \end{TinyC++}
 \end{column}
@@ -243,14 +243,14 @@ private:
 int createWidget(Widget const ** const widget)
 try
 {
-	auto newWidget = std::make_unique<WidgetWrapper>();
+	auto newWidget = std::make_unique<ResourcedWidget>();
     
-	std::string	name = getNameFromSomewhere(/* ... */);
-	if (name.empty())
+	std::string	foo = frobnicate(/* ... */);
+	if (foo.empty())
 	{
 		return 0;
 	}
-	newWidget->setName(std::move(name));
+	newWidget->setfoo(std::move(foo));
 
 	// More setters
     
@@ -266,7 +266,7 @@ catch (std::bad_alloc const &)
 \begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
-	delete static_cast<WidgetWrapper const *>(widget);
+	delete static_cast<ResourcedWidget const *>(widget);
 }
 \end{TinyC++}
 \end{column}
@@ -317,7 +317,7 @@ void freeWidget(Widget const * const widget)
 \begin{columns}
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
-class WidgetWrapper : private Widget // private!
+class ResourcedWidget : private Widget // private!
 {
 	// As before
 
@@ -329,7 +329,7 @@ public:
 	
 	static void deleteWidget(Widget const * const widget)
 	{
-		delete static_cast<WidgetWrapper const *>(widget);
+		delete static_cast<ResourcedWidget const *>(widget);
 	}
 };
 \end{TinyC++}
@@ -352,7 +352,7 @@ catch /* as before */
 \begin{TinyC++}
 void freeWidget(Widget const * const widget)
 {
-	WidgetWrapper::deleteWidget(widget);
+	ResourcedWidget::deleteWidget(widget);
 }
 \end{TinyC++}
 \end{column}
@@ -370,7 +370,7 @@ void freeWidget(Widget const * const widget)
 	
 	\medskip
 	\begin{itemize}
-	\item \code{Widget} members not public anymore in \code{WidgetWrapper} context
+	\item \code{Widget} members not public anymore in \code{ResourcedWidget} context
 	\item Easy to use right, hard to use wrong
 	\end{itemize}
 \end{column}
@@ -380,7 +380,7 @@ void freeWidget(Widget const * const widget)
 	
 	\medskip
 	\begin{itemize}
-	\item still possible to delete a \code{WidgetWrapper} via a pointer to \code{Widget} \\ (but easier to remember the function than the \code{static\_cast})
+	\item still possible to delete a \code{ResourcedWidget} via a pointer to \code{Widget} \\ (but easier to remember the function than the \code{static\_cast})
 	\item increased complexity, two additional functions necessary
 	\item uses private inheritance for an IS-A relationship
 	\end{itemize}
@@ -396,7 +396,7 @@ void freeWidget(Widget const * const widget)
 	\item Do not introduce private inheritance and trust in that no one will use the \code{Widget} wrongly
 	\pause
 	\item Use aggregation and pass the pointer to the member to the client\\
-	But now shared state between \code{createWidget()} and \code{freeWidget()} is necessary to find the correct \code{WidgetWrapper} instance for the given \code{Widget} pointer
+	But now shared state between \code{createWidget()} and \code{freeWidget()} is necessary to find the correct \code{ResourcedWidget} instance for the given \code{Widget} pointer
 	\end{itemize}
 	
 	\pause
