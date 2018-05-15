@@ -141,16 +141,16 @@ Your job now is to implement this API using C++.
 \begin{columns}
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
-int createWidget(Widget const ** const widget)
+int createWidget(Widget const ** widget)
 {
-	auto const newWidget = (Widget *) std::malloc(sizeof(Widget));
+	Widget * newWidget = (Widget *) std::malloc(sizeof(Widget));
 	if (!newWidget)
 	{
 		return 0;
 	}
-	*widget = Widget{}; // zero initialize
+	*widget = {}; // zero initialize
     
-	std::string	const foo = frobnicate(/* ... */);
+	std::string	foo = frobnicate(/* ... */);
 	if (foo.empty())
 	{
 		freeWidget(newWidget);
@@ -168,7 +168,7 @@ int createWidget(Widget const ** const widget)
 \pause
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
-void freeWidget(Widget const * const widget)
+void freeWidget(Widget const * widget)
 {
 	std::free(widget->foo);
     
@@ -224,9 +224,9 @@ public:
         : Widget()	// Default initialization!
 	{}
 
-	void setFoo(std::string value)
+	void setFoo(std::string const & value)
 	{
-		m_foo = std::move(value);
+		m_foo = value;
 		foo = m_foo.c_str();
 	}
 
@@ -240,7 +240,7 @@ private:
 \pause
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
-int createWidget(Widget const ** const widget)
+int createWidget(Widget const ** widget)
 try
 {
 	auto newWidget = std::make_unique<ResourcedWidget>();
@@ -250,7 +250,7 @@ try
 	{
 		return 0;
 	}
-	newWidget->setfoo(std::move(foo));
+	newWidget->setFoo(foo);
 
 	// More setters
     
@@ -264,7 +264,7 @@ catch (std::bad_alloc const &)
 \end{TinyC++}
 \pause
 \begin{TinyC++}
-void freeWidget(Widget const * const widget)
+void freeWidget(Widget const * widget)
 {
 	delete static_cast<ResourcedWidget const *>(widget);
 }
@@ -327,7 +327,7 @@ public:
 		return static_cast<Widget const *>(this);
 	}
 	
-	static void deleteWidget(Widget const * const widget)
+	static void deleteWidget(Widget const * widget)
 	{
 		delete static_cast<ResourcedWidget const *>(widget);
 	}
@@ -337,7 +337,7 @@ public:
 \pause
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
-int createWidget(Widget const ** const widget)
+int createWidget(Widget const ** widget)
 try
 {
 	// As before
@@ -350,7 +350,7 @@ catch /* as before */
 \end{TinyC++}
 
 \begin{TinyC++}
-void freeWidget(Widget const * const widget)
+void freeWidget(Widget const * widget)
 {
 	ResourcedWidget::deleteWidget(widget);
 }
