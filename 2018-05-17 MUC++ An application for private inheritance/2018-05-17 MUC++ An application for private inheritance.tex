@@ -24,6 +24,7 @@
     breaklines=true,
     tabsize=2,
     columns=flexible,
+    escapechar=|,
 }
 
 \lstdefinestyle{C++}
@@ -272,7 +273,7 @@ int createWidget(Widget const ** widget)
 	try
 	{
 		auto newWidget = std::make_unique<ResourcedWidget>();
-    
+	    |\pause|
 		std::string	foo = frobnicate(/* ... */);
 		if (foo.empty())
 		{
@@ -281,10 +282,10 @@ int createWidget(Widget const ** widget)
 		newWidget->setFoo(foo);
 
 		// more setters...
-    
+    	|\pause|
 		*widget = newWidget.release();
 		return SUCCESS;
-	}
+	}|\pause|
 	catch (std::bad_alloc const &)
 	{
 		return OUT_OF_MEMORY;
@@ -356,7 +357,7 @@ void freeWidget(Widget const * widget)
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
 class ResourcedWidget : private Widget // private!
-{
+{ |\pause|
 	// as before...
 
 public:	
@@ -364,7 +365,7 @@ public:
 	{
 		return static_cast<Widget const *>(this);
 	}
-	
+	|\pause|
 	static void deleteWidget(Widget const * widget)
 	{
 		delete static_cast<ResourcedWidget const *>(widget);
@@ -372,7 +373,9 @@ public:
 };
 \end{TinyC++}
 \end{column}
+
 \pause
+
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
 int createWidget(Widget const ** widget)
@@ -388,6 +391,8 @@ try
 }
 catch /* as before */
 \end{TinyC++}
+
+\pause
 
 \begin{TinyC++}
 void freeWidget(Widget const * widget)
