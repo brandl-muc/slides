@@ -143,7 +143,8 @@ We want to implement this API using C++...
 \begin{TinyC++}
 int createWidget(Widget const ** widget)
 {
-	Widget * newWidget = (Widget *) std::malloc(sizeof(Widget));
+	Widget * newWidget =
+			(Widget *) std::malloc(sizeof(Widget));
 	if (!newWidget)
 	{
 		return OUT_OF_MEMORY;
