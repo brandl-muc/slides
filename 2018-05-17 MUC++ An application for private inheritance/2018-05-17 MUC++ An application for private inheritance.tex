@@ -218,7 +218,23 @@ void freeWidget(Widget const * widget)
 \framesubtitle{Using the power of C++}
 \begin{columns}
 \begin{column}{0.45\textwidth}
+Idea:
+\begin{itemize}
+\item introduce class \code{ResourcedWidget}
 \pause
+\item derive from C struct \code{Widget}
+\pause
+\item for every resource in \code{Widget}
+\pause
+\begin{itemize}
+	\item add managing member (\code{std::string}, \code{std::unique\_ptr}, \code{std::vector}, ...) to \code{ResourcedWidget}
+	\pause
+	\item add setter to assign resource to member and assign correct pointer to C struct
+\end{itemize}
+\end{itemize}
+\end{column}
+\pause
+\begin{column}{0.45\textwidth}
 \begin{TinyC++}
 class ResourcedWidget : public Widget
 {
