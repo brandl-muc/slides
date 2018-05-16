@@ -300,11 +300,16 @@ void freeWidget(Widget const * widget)
 	\medskip
 	Easier usage:	
 	\begin{itemize}
+	\pause
 	\item automated resource management
+	\pause
 	\item \code{Widget} members are default initialized
+	\pause
 	\item easier \code{createWidget()} implementation
+	\pause
 	\item easier \code{freeWidget()} implementation
-	\item encapsulated "conversion" to C types
+	\pause
+	\item feels like a C++ class
 	\end{itemize}
 \end{column}
 \pause
@@ -314,7 +319,9 @@ void freeWidget(Widget const * widget)
 	\medskip
 	Potential for resource leaks:
 	\begin{itemize}
+	\pause
 	\item \code{static\_cast} can be forgotten during deletion
+	\pause
 	\item implementers can still access \code{Widget} members and use them wrongly \\
 	(e.g. assign raw owning pointers)
 	\end{itemize}
