@@ -1,0 +1,464 @@
+\documentclass{beamer}
+ \usetheme{Madrid}
+ \usecolortheme{lily}
+ \geometry{paperwidth=160mm,paperheight=90mm}
+ \beamertemplatenavigationsymbolsempty
+\usepackage{listings}
+\usepackage{accsupp}
+\newcommand*{\noaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\definecolor{ForestGreen}{RGB}{60, 160, 49}
+
+\lstdefinestyle{Common}
+{
+    numbers=left,
+    numbersep=1em,
+    numberstyle=\tiny\color{orange}\noaccsupp,
+    frame=single,
+    framesep=\fboxsep,
+    framerule=\fboxrule,
+    rulecolor=\color{orange},
+    backgroundcolor=\color{orange!10},
+    xleftmargin=\dimexpr\fboxsep+\fboxrule\relax,
+    xrightmargin=\dimexpr\fboxsep+\fboxrule\relax,
+    breaklines=true,
+    tabsize=2,
+    columns=flexible,
+    escapechar=|,
+}
+
+\lstdefinestyle{C++}
+{
+	style=Common,
+    language={C++},
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{ForestGreen}\ttfamily,
+    morecomment=[l][\color{gray}]{\#},
+}
+
+\lstdefinestyle{TinyC++}
+{
+	style=Common,
+    language={C++},
+    basicstyle=\ttfamily\tiny,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{ForestGreen}\ttfamily,
+    morecomment=[l][\color{gray}]{\#},
+}
+
+
+\lstnewenvironment{C++}{\lstset{style=C++}}{}
+\lstnewenvironment{TinyC++}{\lstset{style=TinyC++}}{}
+
+\title{An application for private inheritance?}
+\subtitle{Lightning Talk for MUC++}	
+\author{Matth\"aus Brandl}
+\date{2018-05-17}
+\subject{Computer Science}
+
+\def\code#1{\texttt{#1}}
+\def\titleinframe#1{{\usebeamercolor[fg]{structure} #1}}
+\def\link#1#2{\href{#1}{\usebeamercolor[fg]{structure} \underline{#2}}}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Wait, what?}
+\framesubtitle{What is private inheritance}
+
+\begin{C++}
+class Derived : private Base
+{};
+\end{C++}
+
+\begin{itemize}
+\item all public and protected members of \code{Base} accessible as private members of \code{Derived}
+\item private members of \code{Base} never accessible (unless friended)
+\pause 
+\item inheritance relationship not accessible outside of \code{Derived}, not \code{static\_cast}-able
+\pause
+\item models HAS-A instead of IS-A
+\end{itemize}
+\pause
+
+However HAS-A is usually better modelled by using a member variable because this causes less coupling (\textit{favor composition over inheritance}).
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Typical use cases for private inheritance}
+Private inheritance should be used if one does not want to model IS-A but
+\begin{itemize}
+\item needs to override a virtual function
+\pause
+\item needs access to a protected member
+\pause
+\item wants to make use of the Empty Base Optimization (e.g. with policy-based design)
+\end{itemize}
+\pause
+There are also other use cases, see the \link{https://isocpp.org/wiki/faq/private-inheritance}{C++ FAQ} or \link{https://en.cppreference.com/w/cpp/language/derived_class\#Private_inheritance}{cppreference.com}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{The problem}
+%\framesubtitle{Subtitle}
+Suppose a dynamic library with the following C API:
+
+\begin{C++}
+typedef struct
+{
+    /* pointer to a resource, e.g., a C string */
+    char const * foo;
+
+    /* more variables that need resources ... */
+    
+} Widget;
+
+int createWidget(Widget const ** widget);
+
+void freeWidget(Widget const * widget);
+\end{C++}
+
+We want to implement this API using C++...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{The C-ish approach}
+\framesubtitle{Tedious but effective}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+int createWidget(Widget const ** widget)
+{
+	Widget * newWidget =
+			(Widget *) std::malloc(sizeof(Widget));
+	if (!newWidget)
+	{
+		return OUT_OF_MEMORY;
+	}
+	*widget = {}; // zero initialize
+    
+	std::string	foo = frobnicate(/* ... */);
+	if (foo.empty())
+	{
+		freeWidget(newWidget);
+		return FROBNICATE_FAILED;
+	}
+	newWidget->foo = strdup(foo.c_str());
+    
+	/* ... */
+    
+	*widget = newWidget;
+	return SUCCESS;
+}
+\end{TinyC++}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+void freeWidget(Widget const * widget)
+{
+	std::free(widget->foo);
+    
+	/* ... */
+    
+	std::free(widget);
+}
+\end{TinyC++}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{The C-ish approach}
+\framesubtitle{\code{malloc()} \& \code{free()} galore}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+	\titleinframe{Advantages:}
+	\pause
+	\begin{itemize}
+	\item straightforward to implement
+	\item easy to understand
+	\item low complexity
+	\end{itemize}
+\end{column}
+\pause
+\begin{column}{0.45\textwidth}
+	\titleinframe{Disadvantages:}
+	\pause
+	\begin{itemize}
+	\item manual ressource management
+	\item raw owning pointers
+	\item error prone
+	\item hard to get right
+	\item tedious
+	\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Automating ressource management}
+\framesubtitle{Using the power of C++}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+Idea:
+\begin{itemize}
+\onslide<1->
+\item introduce class \code{ResourcedWidget}
+\onslide<3->
+\item derive from C struct \code{Widget}
+\onslide<5->
+\item default initialize the base C struct
+\onslide<7->
+\item for every resource in \code{Widget}
+\begin{itemize}
+	\item add managing member (\code{std::string}, \code{std::unique\_ptr}, \code{std::vector}, ...) to \code{ResourcedWidget}
+	\onslide<9->
+	\item add setter to assign resource to member and assign correct pointer to C struct
+\end{itemize}
+\end{itemize}
+\end{column}
+\onslide<2->
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+class ResourcedWidget |\onslide<4->|: public Widget |\onslide<2->|
+{|\onslide<6->|
+public:
+	explicit ResourcedWidget()
+        : Widget()	// Default initialization!
+	{}
+	|\onslide<10->|
+	void setFoo(std::string const & value)
+	{
+		m_foo = value;
+		foo = m_foo.c_str();
+	}
+
+	// more setters...
+|\onslide<8->|	
+private:
+	std::string m_foo;|\onslide<2->|
+};
+\end{TinyC++}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Automating ressource management}
+\framesubtitle{Using the power of C++}
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+int createWidget(Widget const ** widget)
+{
+	try
+	{
+		auto newWidget = std::make_unique<ResourcedWidget>();
+	    |\pause|
+		std::string	foo = frobnicate(/* ... */);
+		if (foo.empty())
+		{
+			return FROBNICATE_FAILED;
+		}
+		newWidget->setFoo(foo);
+
+		// more setters...
+    	|\pause|
+		*widget = newWidget.release();
+		return SUCCESS;
+	}|\pause|
+	catch (std::bad_alloc const &)
+	{
+		return OUT_OF_MEMORY;
+	}
+}
+\end{TinyC++}
+\end{column}
+\pause
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+void freeWidget(Widget const * widget)
+{
+	delete static_cast<ResourcedWidget const *>(widget);
+}
+\end{TinyC++}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Automating ressource management}
+%\framesubtitle{That's why we like C++}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+	\titleinframe{Advantages:}
+	
+	\medskip
+	Easier usage:	
+	\begin{itemize}
+	\pause
+	\item automated resource management
+	\pause
+	\item \code{Widget} members are default initialized
+	\pause
+	\item easier \code{createWidget()} implementation
+	\pause
+	\item easier \code{freeWidget()} implementation
+	\pause
+	\item feels like a C++ class
+	\end{itemize}
+\end{column}
+\pause
+\begin{column}{0.45\textwidth}
+	\titleinframe{Disadvantages:}
+	
+	\medskip
+	Potential for resource leaks:
+	\begin{itemize}
+	\pause
+	\item \code{static\_cast} can be forgotten during deletion
+	\pause
+	\item implementers can still access \code{Widget} members and use them wrongly \\
+	(e.g. assign raw owning pointers)
+	\end{itemize}
+
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Enter private inheritance}
+\framesubtitle{Making \code{Widget} members inaccessible}
+\pause
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+class ResourcedWidget : private Widget // private!
+{ |\pause|
+	// as before...
+|\pause|
+public:	
+	Widget const * toWidget() const
+	{
+		return static_cast<Widget const *>(this);
+	}
+	|\pause|
+	static void deleteWidget(Widget const * widget)
+	{
+		delete static_cast<ResourcedWidget const *>(widget);
+	}
+};
+\end{TinyC++}
+\end{column}
+
+\pause
+
+\begin{column}{0.45\textwidth}
+\begin{TinyC++}
+int createWidget(Widget const ** widget)
+try
+{
+	auto newWidget = std::make_unique<ResourcedWidget>();
+	
+	// as before...
+    
+	*widget = newWidget->toWidget();
+	newWidget.release();
+	return SUCCESS;
+}
+catch /* as before */
+\end{TinyC++}
+
+\pause
+
+\begin{TinyC++}
+void freeWidget(Widget const * widget)
+{
+	ResourcedWidget::deleteWidget(widget);
+}
+\end{TinyC++}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Enter private inheritance}
+%\framesubtitle{Making \code{Wrapper} members inaccessible}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+	\titleinframe{Advantages:}
+	
+	\medskip
+	\begin{itemize}
+	\item \code{Widget} members not public anymore in \code{ResourcedWidget} context
+	\item Easy to use right, hard to use wrong
+	\end{itemize}
+\end{column}
+\pause
+\begin{column}{0.45\textwidth}
+	\titleinframe{Disadvantages:}
+	
+	\medskip
+	\begin{itemize}
+	\item still possible to delete a \code{ResourcedWidget} via a pointer to \code{Widget} \\ (but easier to remember the function than the \code{static\_cast})
+	\item increased complexity, two additional functions necessary
+	\item uses private inheritance for an IS-A relationship
+	\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Alternatives?}
+\pause
+	\begin{itemize}
+	\item Do not introduce private inheritance and trust in that no one will use the \code{Widget} wrongly
+	\pause
+	\item Use aggregation and pass the pointer to the member to the client\\
+	But now shared state between \code{createWidget()} and \code{freeWidget()} is necessary to find the correct \code{ResourcedWidget} instance for the given \code{Widget} pointer
+	\pause
+	\item Leave the type system with \code{reinterpret\_cast}
+	\pause
+	\item Use a handle approach, to access a data member you pass the handle to a dedicated function
+	\end{itemize}
+	
+	\pause
+	\bigskip
+	Please share your opinion and ideas (\link{mailto:brandl.matthaeus@gmail.com}{brandl.matthaeus@gmail.com})
+	
+	\bigskip
+	There is a \link{http://coliru.stacked-crooked.com/a/7d4e3267bb608362}{working example on Coliru}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
