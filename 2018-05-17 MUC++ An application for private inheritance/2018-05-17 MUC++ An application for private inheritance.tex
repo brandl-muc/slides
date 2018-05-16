@@ -432,11 +432,16 @@ void freeWidget(Widget const * widget)
 
 \begin{frame}[fragile]
 \frametitle{Alternatives?}
+\pause
 	\begin{itemize}
 	\item Do not introduce private inheritance and trust in that no one will use the \code{Widget} wrongly
 	\pause
 	\item Use aggregation and pass the pointer to the member to the client\\
 	But now shared state between \code{createWidget()} and \code{freeWidget()} is necessary to find the correct \code{ResourcedWidget} instance for the given \code{Widget} pointer
+	\pause
+	\item Leave the type system with \code{reinterpret\_cast}
+	\pause
+	\item Use a handle approach, to access a data member you pass the handle to a dedicated function
 	\end{itemize}
 	
 	\pause
