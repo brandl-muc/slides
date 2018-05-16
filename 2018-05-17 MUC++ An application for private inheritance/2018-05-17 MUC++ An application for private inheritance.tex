@@ -119,7 +119,7 @@ Suppose the following C API:
 \begin{C++}
 typedef struct
 {
-    /* raw owning pointer, it's C after all */
+    /* pointer to a resource, e.g., a C string */
     char const * foo;
 
     /* more variables that need resources ... */
@@ -127,10 +127,11 @@ typedef struct
 } Widget;
 
 int createWidget(Widget const ** widget);
+
 void freeWidget(Widget const * widget);
 \end{C++}
 
-Your job now is to implement this API using C++.
+We want to implement this API using C++...
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
