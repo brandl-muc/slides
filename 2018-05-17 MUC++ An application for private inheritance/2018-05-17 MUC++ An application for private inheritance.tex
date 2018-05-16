@@ -185,10 +185,11 @@ void freeWidget(Widget const * widget)
 
 \begin{frame}[fragile]
 \frametitle{The C-ish approach}
-%\framesubtitle{Tedious but effective}
+\framesubtitle{\code{malloc()} \& \code{free()} galore}
 \begin{columns}[T]
 \begin{column}{0.45\textwidth}
 	\titleinframe{Advantages:}
+	\pause
 	\begin{itemize}
 	\item straightforward to implement
 	\item easy to understand
@@ -198,6 +199,7 @@ void freeWidget(Widget const * widget)
 \pause
 \begin{column}{0.45\textwidth}
 	\titleinframe{Disadvantages:}
+	\pause
 	\begin{itemize}
 	\item manual ressource management
 	\item raw owning pointers
