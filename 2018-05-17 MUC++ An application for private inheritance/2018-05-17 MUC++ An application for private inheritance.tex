@@ -233,7 +233,7 @@ public:
 		foo = m_foo.c_str();
 	}
 
-	// More setters...
+	// more setters...
 	
 private:
 	std::string m_foo;
@@ -264,7 +264,7 @@ int createWidget(Widget const ** widget)
 		}
 		newWidget->setFoo(foo);
 
-		// More setters
+		// more setters...
     
 		*widget = newWidget.release();
 		return SUCCESS;
@@ -334,7 +334,7 @@ void freeWidget(Widget const * widget)
 \begin{TinyC++}
 class ResourcedWidget : private Widget // private!
 {
-	// As before
+	// as before...
 
 public:	
 	Widget const * toWidget() const
@@ -355,7 +355,7 @@ public:
 int createWidget(Widget const ** widget)
 try
 {
-	// As before
+	// as before...
     
 	*widget = newWidget->toWidget();
 	newWidget.release();
