@@ -221,29 +221,31 @@ void freeWidget(Widget const * widget)
 \begin{column}{0.45\textwidth}
 Idea:
 \begin{itemize}
+\onslide<1->
 \item introduce class \code{ResourcedWidget}
-\pause
+\onslide<3->
 \item derive from C struct \code{Widget}
-\pause
+\onslide<5->
+\item default initialize the base C struct
+\onslide<7->
 \item for every resource in \code{Widget}
-\pause
 \begin{itemize}
 	\item add managing member (\code{std::string}, \code{std::unique\_ptr}, \code{std::vector}, ...) to \code{ResourcedWidget}
-	\pause
+	\onslide<9->
 	\item add setter to assign resource to member and assign correct pointer to C struct
 \end{itemize}
 \end{itemize}
 \end{column}
-\pause
+\onslide<2->
 \begin{column}{0.45\textwidth}
 \begin{TinyC++}
-class ResourcedWidget : public Widget
-{
+class ResourcedWidget |\onslide<4->|: public Widget |\onslide<2->|
+{|\onslide<6->|
 public:
 	explicit ResourcedWidget()
         : Widget()	// Default initialization!
 	{}
-
+	|\onslide<10->|
 	void setFoo(std::string const & value)
 	{
 		m_foo = value;
@@ -251,9 +253,9 @@ public:
 	}
 
 	// more setters...
-	
+|\onslide<8->|	
 private:
-	std::string m_foo;
+	std::string m_foo;|\onslide<2->|
 };
 \end{TinyC++}
 \end{column}
