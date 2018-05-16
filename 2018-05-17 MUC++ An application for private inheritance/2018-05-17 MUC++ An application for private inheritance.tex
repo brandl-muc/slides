@@ -362,6 +362,8 @@ public:
 int createWidget(Widget const ** widget)
 try
 {
+	auto newWidget = std::make_unique<ResourcedWidget>();
+	
 	// as before...
     
 	*widget = newWidget->toWidget();
